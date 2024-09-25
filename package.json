@@ -1,24 +1,36 @@
 {
-  "name": "@hexlet/code",
+  "name": "my-webpack-project",
   "version": "1.0.0",
-  "description": "[![Actions Status](https://github.com/AnPopit/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AnPopit/frontend-project-11/actions)\r [![check](https://github.com/AnPopit/frontend-project-11/actions/workflows/check.yml/badge.svg)](https://github.com/AnPopit/frontend-project-11/actions/workflows/check.yml)",
+  "description": "My webpack project",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production --node-env=production",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch",
+    "serve": "webpack serve"
   },
-  "author": "",
+  "author": "Anna Politova",
   "license": "ISC",
   "devDependencies": {
     "@eslint/create-config": "^1.0.0",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.11.1",
+    "@webpack-cli/generators": "^3.0.7",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-react": "^7.36.1",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "globals": "^15.9.0"
+    "globals": "^15.9.0",
+    "html-webpack-plugin": "^5.6.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3"
   }
 }
