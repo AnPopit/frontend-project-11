@@ -3,7 +3,7 @@ import onChange from 'on-change';
 export default (elements, i18n, initialState) => { // принимает состояние
   const renderClass = () => {
     const el2 = elements.fields.link;
-    if (initialState.form.valid) {
+    if (initialState.valid) {
       el2.classList.remove('is-invalid');
       el2.classList.add('is-valid');
     } else {
