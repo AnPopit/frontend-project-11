@@ -1,6 +1,7 @@
 const request = (link) => fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`)
   .then(response =>  response.json())
-  .then(data =>  data.contents); 
+  .then(data => data.contents); 
+  
 
 //.catch
 export default request;
