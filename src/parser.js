@@ -3,7 +3,6 @@ const parser = (data) => {
   const posts = [];
     const parser = new DOMParser();
       const dataDOM = parser.parseFromString(data, "text/html");
-      console.log(dataDOM)
       const errorNode = dataDOM.querySelector("parsererror");
       if (errorNode) {
         throw new Error('Ошибка парсинга');
@@ -16,7 +15,6 @@ const parser = (data) => {
       //console.log(dataDOM.querySelector('title'))
       const item = dataDOM.querySelectorAll('channel > item');
       item.forEach((el) => {
-        console.log(el.querySelector('link').nextSibling)
         posts.push({
           title: el.querySelector('title').textContent,
           link: el.querySelector('link').nextSibling.textContent, //куда пропал link????????????

@@ -1,6 +1,30 @@
 import onChange from 'on-change';
 
 export default (elements, i18n, initialState) => { // принимает состояние
+  const createModal = (title, link, description) => {
+    const modal = document.createElement('div');
+    modal.innerHTML = `<div class="modal fade"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">${title}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">${i18n.t('inter.posts.close')}</button>
+        <button type="button" class="btn btn-secondary">${i18n.t('inter.posts.close')}</button>
+      </div>
+    </div>
+  </div>
+</div>`
+  }
+  
+  
+  
+  
+  
   const renderClass = () => {
     const el2 = elements.fields.link;
     const feedback = document.querySelector('.feedback');
@@ -108,6 +132,10 @@ export default (elements, i18n, initialState) => { // принимает сос�
       button.textContent = i18n.t('inter.posts.watch');
       li.append(a);
       li.append(button);
+      button.addEventListener('click', () => {
+        createModal(post.title, post.description, post.link)
+
+       })
      })
     }) 
   }

@@ -8,13 +8,15 @@ import * as yup from 'yup';
 import resources from './locales/index.js';
 import watch from './view.js';
 
-export default async () => {
+export default () => {
   const i18nInstance = i18next.createInstance();
-  await i18nInstance.init({
+  i18nInstance.init({
     lng: 'ru',
     debug: false,
     resources,
-  }); //переписать на then
+  }).then(() => i18nInstance).catch(() => {
+    throw new Error('Ошибка инициализации')
+  })
 
   yup.setLocale({
     mixed: {
@@ -57,6 +59,8 @@ export default async () => {
     const formData = new FormData(e.target);
     const urlValue = formData.get('url');
     watchedState.error = '';
+    document.querySelector('.rss-form').reset();
+    document.getElementById('url-input').focus();
       schema.validate(urlValue, { abortEarly: false })
       .then((urlValue) => findDub(initialState.links, urlValue))
       .then((urlValue) => {
@@ -81,6 +85,8 @@ export default async () => {
             break;
           case 'Не уникальный RSS':
             key = 'err.notUnique.notUnique';
+          case 'Ошибка доступа':
+            key = 'err.network.network';
         }
         watchedState.valid = false;
         const value = i18nInstance.t(key);

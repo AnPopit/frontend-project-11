@@ -7,6 +7,8 @@ export default {
       posts: {
         posts: 'Посты',
         watch: 'Просмотр',
+        close: 'Закрыть',
+        readFull: 'Читать полностью',
       }
     },
     success: {
