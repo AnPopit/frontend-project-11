@@ -2,29 +2,44 @@ import onChange from 'on-change';
 
 export default (elements, i18n, initialState) => { // принимает состояние
   const createModal = (title, link, description) => {
-    const modal = document.createElement('div');
-    modal.innerHTML = `<div class="modal fade"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+    const divAll = document.querySelector('.modal');
+    divAll.innerHTML = `<div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">${title}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">${i18n.t('inter.posts.close')}</button>
-        <button type="button" class="btn btn-secondary">${i18n.t('inter.posts.close')}</button>
-      </div>
-    </div>
-  </div>
-</div>`
-  }
-  
-  
-  
-  
-  
+        <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close">
+          </button>
+          </div>
+          <div class="modal-body text-break">${description}</div>
+          <div class="modal-footer">
+            <a class="btn btn-primary full-article" href="${link}" role="button" target="_blank" rel="noopener noreferrer">${i18n.t('inter.posts.readFull')} </a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${i18n.t('inter.posts.close')}</button>
+            </div>
+            </div>
+            </div>`
+      const body = document.querySelector('body');
+      const divFooter = document.createElement('div');
+      divFooter.classList.add('modal-backdrop', 'fade', 'show');
+      body.classList.add('modal-open')
+      body.style = "overflow: hidden; padding-right: 17px;"
+      divAll.classList.add('show')
+      divAll.style = 'display: block;'
+      divAll.ariaModal = "true";
+      divAll.role = "dialog";
+      divAll.removeAttribute("aria-hidden");
+      const close = document.querySelectorAll('[data-bs-dismiss="modal"]');
+      close.forEach((el) => el.addEventListener('click', () => {
+        divFooter.remove();
+        divAll.style = 'display: none;'
+        divAll.removeAttribute('[aria-hidden="true"]');
+        divAll.classList.remove('show');
+        divAll.removeAttribute("aria-modal");
+        divAll.removeAttribute("role");
+      }))
+  } 
+
+  const touchPost = [];
+
   const renderClass = () => {
     const el2 = elements.fields.link;
     const feedback = document.querySelector('.feedback');
@@ -116,11 +131,15 @@ export default (elements, i18n, initialState) => { // принимает сос�
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       ul.append(li);
       const a = document.createElement('a');
-      a.classList.add('fw-bold');
       a.dataset.id = "2" //поправить
       a.target = "_blank"
       a.rel = "noopener noreferrer"
       a.href = post.link
+      a.classList.add('fw-bold')
+      if (touchPost.includes(post.title)) {
+        a.classList.add('fw-normal', 'link-secondary');
+        a.classList.remove('fw-bold')
+      }
       a.textContent = post.title;
       const button = document.createElement('button');
       button.classList.add('btn', 'btn-outline-primary','btn-sm');
@@ -133,9 +152,15 @@ export default (elements, i18n, initialState) => { // принимает сос�
       li.append(a);
       li.append(button);
       button.addEventListener('click', () => {
-        createModal(post.title, post.description, post.link)
-
+        createModal(post.title, post.link, post.description);
+        touchPost.push(post.title);
+        console.log(touchPost)
+        if (touchPost.includes(post.title)) {
+          a.classList.add('fw-normal', 'link-secondary');
+          a.classList.remove('fw-bold')
+        }
        })
+       
      })
     }) 
   }
@@ -149,8 +174,10 @@ export default (elements, i18n, initialState) => { // принимает сос�
         break;
     case 'feeds':
         renderFeed()
-        renderNews()
         break;
+    case 'posts':
+      renderNews()
+          break;
 
       default:
         break;

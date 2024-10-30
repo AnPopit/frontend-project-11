@@ -1,4 +1,5 @@
 import './styles.scss';
+import _ from 'lodash';
 import request from './request.js';
 import parser from './parser.js';
 import 'bootstrap';
@@ -14,9 +15,8 @@ export default () => {
     lng: 'ru',
     debug: false,
     resources,
-  }).then(() => i18nInstance).catch(() => {
-    throw new Error('Ошибка инициализации')
-  })
+  }).then(() => {
+  
 
   yup.setLocale({
     mixed: {
@@ -28,7 +28,7 @@ export default () => {
 
   const initialState = {
     valid: true,
-    error: '1',
+    error: '1', //??
     links: [], //сюда добавлю ссылки, чтобы потом првоерить на уникальность
     posts: [], //массив с объектами [{id, заголовок, описание} ]
     feeds: [], //массив с объектами {id, заголовок, описание}
@@ -59,7 +59,7 @@ export default () => {
     const formData = new FormData(e.target);
     const urlValue = formData.get('url');
     watchedState.error = '';
-    document.querySelector('.rss-form').reset();
+    document.querySelector('.rss-form').reset(); //только если данный валидные
     document.getElementById('url-input').focus();
       schema.validate(urlValue, { abortEarly: false })
       .then((urlValue) => findDub(initialState.links, urlValue))
@@ -70,10 +70,29 @@ export default () => {
       .then((arr) => {
         watchedState.posts.push(arr[1])
         watchedState.feeds.push(arr[0])
-        //console.log( JSON.parse(JSON.stringify(watchedState.posts)).length)
-         //обработка ошибок в промисах 
-      }) // вычленяю фиды и новости 
+        return arr[1];
+      })
+      .then((post) => {
+        const updatePost = () => {
+          const promises = watchedState.links.map((link) => {
+            request(link)
+            .then((data) => parser(data))
+            .then((arr) => {
+              let diff = _.differenceWith(arr[1], post, _.isEqual);
+              if (diff.length !== 0) {
+                watchedState.posts.unshift(diff)
+                post.unshift(diff[0]) 
+                diff = diff.splice(0, arr.length)
+              }
+            })
+          });
+          const promise = Promise.all(promises);
+          promise.then(() => setTimeout(updatePost, 5000));
+        } 
+        setTimeout(updatePost, 5000); 
+      }) 
       .catch((err) => {
+        //проверить err
         watchedState.valid = true;
         let key;
         switch(err.message) {
@@ -85,12 +104,38 @@ export default () => {
             break;
           case 'Не уникальный RSS':
             key = 'err.notUnique.notUnique';
+            break;
           case 'Ошибка доступа':
             key = 'err.network.network';
+            break;
         }
         watchedState.valid = false;
         const value = i18nInstance.t(key);
         watchedState.error = value;
       })
+      
   });
+  
+
+  /*const updatePost = () => {
+    const promises = watchedState.links.map((link) => {
+      request(link)
+      .then((data) => parser(data))
+      .then((arr) => {
+        let diff = _.differenceWith(arr[1], post, _.isEqual);
+        watchedState.posts.push(diff)
+        console.log(initialState.posts.slice(-1) )
+      })
+    });
+    const promise = Promise.all(promises);
+    promise.then(() => setTimeout(updatePost, 5000));
+  } 
+  setTimeout(updatePost,5000); */
+
+  
+
+
+
+  
+})
 };

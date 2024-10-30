@@ -2,7 +2,7 @@ const parser = (data) => {
   const feed = {};
   const posts = [];
     const parser = new DOMParser();
-      const dataDOM = parser.parseFromString(data, "text/html");
+      const dataDOM = parser.parseFromString(data, "text/xml");
       const errorNode = dataDOM.querySelector("parsererror");
       if (errorNode) {
         throw new Error('Ошибка парсинга');
@@ -11,13 +11,11 @@ const parser = (data) => {
       const descriptionFeed = dataDOM.querySelector('channel > description').textContent;
       feed.title = titleFeed;
       feed.description = descriptionFeed;
-      ///console.log(dataDOM.querySelector('description'))
-      //console.log(dataDOM.querySelector('title'))
       const item = dataDOM.querySelectorAll('channel > item');
       item.forEach((el) => {
         posts.push({
           title: el.querySelector('title').textContent,
-          link: el.querySelector('link').nextSibling.textContent, //куда пропал link????????????
+          link: el.querySelector('link').textContent, //куда пропал link???????????? вернуть назад
           description: el.querySelector('description').textContent
         })
       })
