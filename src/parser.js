@@ -15,7 +15,7 @@ const parser = (data) => {
       item.forEach((el) => {
         posts.push({
           title: el.querySelector('title').textContent,
-          link: el.querySelector('link').textContent, //куда пропал link???????????? вернуть назад
+          link: el.querySelector('link').textContent, 
           description: el.querySelector('description').textContent
         })
       })

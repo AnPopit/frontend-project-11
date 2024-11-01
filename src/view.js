@@ -131,7 +131,7 @@ export default (elements, i18n, initialState) => { // принимает сос�
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       ul.append(li);
       const a = document.createElement('a');
-      a.dataset.id = "2" //поправить
+      a.dataset.id = "2" //удалить
       a.target = "_blank"
       a.rel = "noopener noreferrer"
       a.href = post.link
@@ -154,13 +154,11 @@ export default (elements, i18n, initialState) => { // принимает сос�
       button.addEventListener('click', () => {
         createModal(post.title, post.link, post.description);
         touchPost.push(post.title);
-        console.log(touchPost)
-        if (touchPost.includes(post.title)) {
+        if (touchPost.includes(post.title)) { //через id
           a.classList.add('fw-normal', 'link-secondary');
           a.classList.remove('fw-bold')
         }
        })
-       
      })
     }) 
   }

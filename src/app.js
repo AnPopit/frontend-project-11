@@ -28,7 +28,7 @@ export default () => {
 
   const initialState = {
     valid: true,
-    error: '1', //??
+    error: '1', //??????????????????????????????????????????????????????????
     links: [], //сюда добавлю ссылки, чтобы потом првоерить на уникальность
     posts: [], //массив с объектами [{id, заголовок, описание} ]
     feeds: [], //массив с объектами {id, заголовок, описание}
@@ -68,11 +68,11 @@ export default () => {
         return request(urlValue)})
       .then((data) => parser(data))
       .then((arr) => {
-        watchedState.posts.push(arr[1])
+        watchedState.posts.push(arr[1]) //  TODO разобрать на части и добавить id, дестр-ия
         watchedState.feeds.push(arr[0])
-        return arr[1];
+       // return arr[1];
       })
-      .then((post) => {
+      /*.then((post) => {
         const updatePost = () => {
           const promises = watchedState.links.map((link) => {
             request(link)
@@ -90,7 +90,7 @@ export default () => {
           promise.then(() => setTimeout(updatePost, 5000));
         } 
         setTimeout(updatePost, 5000); 
-      }) 
+      }) */
       .catch((err) => {
         //проверить err
         watchedState.valid = true;
@@ -115,22 +115,26 @@ export default () => {
       })
       
   });
+
   
 
-  /*const updatePost = () => {
+  const updatePost = () => {
     const promises = watchedState.links.map((link) => {
       request(link)
       .then((data) => parser(data))
       .then((arr) => {
-        let diff = _.differenceWith(arr[1], post, _.isEqual);
-        watchedState.posts.push(diff)
-        console.log(initialState.posts.slice(-1) )
+        let diff = _.differenceWith(arr[1], watchedState.posts[0], _.isEqual);
+        console.log(diff)
+        if (diff.length !== 0) {
+          watchedState.posts.push(diff)
+          diff = diff.splice(0, diff.length) //поправить чтобы один раз 
+        }
       })
     });
     const promise = Promise.all(promises);
     promise.then(() => setTimeout(updatePost, 5000));
   } 
-  setTimeout(updatePost,5000); */
+  setTimeout(updatePost,5000); 
 
   
 
