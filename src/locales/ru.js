@@ -9,7 +9,7 @@ export default {
         watch: 'Просмотр',
         close: 'Закрыть',
         readFull: 'Читать полностью',
-      }
+      },
     },
     success: {
       load: {
