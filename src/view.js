@@ -123,7 +123,6 @@ export default (elements, i18n, initialState) => {
     }
     const ul = postsDiv.querySelector('ul');
     const { posts } = initialState;
-    // console.log(posts)
     posts.forEach((post) => {
       const li = document.createElement('li');
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');

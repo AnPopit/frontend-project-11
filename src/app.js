@@ -73,7 +73,6 @@ export default () => {
             element.id = _.uniqueId();
           });
           watchedState.posts.push(...posts);
-          console.log(watchedState.posts);
           watchedState.feeds.push(feed);
         })
         .catch((err) => {
