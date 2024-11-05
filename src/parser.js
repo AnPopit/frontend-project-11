@@ -1,8 +1,8 @@
 const parser = (data) => {
   const feed = {};
   const posts = [];
-  const parser = new DOMParser();
-  const dataDOM = parser.parseFromString(data, 'text/xml');
+  const parserCopy = new DOMParser();
+  const dataDOM = parserCopy.parseFromString(data, 'text/xml');
   const errorNode = dataDOM.querySelector('parsererror');
   if (errorNode) {
     throw new Error('Ошибка парсинга');

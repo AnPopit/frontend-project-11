@@ -68,7 +68,10 @@ export default () => {
         .then((arr) => {
           document.querySelector('.rss-form').reset();
           const [feed, posts] = arr;
-          posts.forEach((el) => el.id = _.uniqueId());
+          posts.forEach((el) => {
+            const element = el;
+            element.id = _.uniqueId();
+          });
           watchedState.posts.push(...posts);
           console.log(watchedState.posts);
           watchedState.feeds.push(feed);
@@ -103,15 +106,22 @@ export default () => {
         request(link)
           .then((data) => parser(data))
           .then((arr) => {
-            const [feed, posts] = arr;
+            const [, posts] = arr;
             const currentPosts = _.cloneDeep(watchedState.posts);
-            currentPosts.forEach((el) => delete el.id);
+            currentPosts.forEach((el) => {
+              const element = el;
+              delete element.id;
+            });
             const diff = _.differenceWith(posts, currentPosts, _.isEqual);
-            diff.forEach((el) => el.id = _.uniqueId());
+            diff.forEach((el) => {
+              const element = el;
+              element.id = _.uniqueId();
+            });
             if (diff.length !== 0) {
               watchedState.posts.push(...diff);
             }
           });
+        return true;
       });
       const promise = Promise.all(promises);
       promise.then(() => setTimeout(updatePost, 5000));
