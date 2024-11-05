@@ -57,7 +57,7 @@ export default () => {
       const formData = new FormData(e.target);
       const url = formData.get('url');
       watchedState.error = '';
-      document.getElementById('url-input').focus();
+      elements.fields.link.focus();
       schema.validate(url, { abortEarly: false })
         .then((urlValue) => {
           findDub(initialState.links, urlValue);
@@ -66,7 +66,7 @@ export default () => {
         })
         .then((data) => parser(data))
         .then((arr) => {
-          document.querySelector('.rss-form').reset();
+          elements.form.reset();
           const [feed, posts] = arr;
           posts.forEach((el) => {
             const element = el;
