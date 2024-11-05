@@ -26,7 +26,7 @@ export default () => {
 
     const initialState = {
       valid: true,
-      error: '',
+      error: '1',
       links: [],
       posts: [],
       feeds: [],
