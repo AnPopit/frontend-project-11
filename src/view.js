@@ -129,7 +129,6 @@ export default (elements, i18n, initialState) => {
       li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
       ul.append(li);
       const a = document.createElement('a');
-      a.dataset.id = '2'; // удалить
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
       a.href = post.link;
