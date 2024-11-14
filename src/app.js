@@ -25,8 +25,8 @@ export default () => {
     const schema = yup.string().url();
 
     const initialState = {
-      valid: true,
-      error: '1',
+      valid: '', //проверка на валидность
+      error: '',
       links: [],
       posts: [],
       feeds: [],
@@ -45,58 +45,58 @@ export default () => {
       if (array.includes(el)) {
         throw new Error('Не уникальный RSS');
       } else {
-        return Promise.resolve(el);
+        return el;
       }
     };
+
+    const chooseError = (error) => {
+      switch (error) {
+        case 'this must be a valid URL':
+          return 'err.url.url';
+        case 'Ошибка парсинга':
+          return'err.parse.parse';
+        case 'Не уникальный RSS':
+          return 'err.notUnique.notUnique';
+        case 'Ошибка доступа':
+          return 'err.network.network';
+        default:
+          throw new Error('Unidentified error');
+      }
+    }
 
     const watchedState = watch(elements, i18nInstance, initialState);
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
-      watchedState.valid = true;
       const formData = new FormData(e.target);
-      const url = formData.get('url');
+      const url = formData.get('url'); //вынести эту переменную в состояние
       watchedState.error = '';
       elements.fields.link.focus();
       schema.validate(url, { abortEarly: false })
         .then((urlValue) => {
           findDub(initialState.links, urlValue);
-          watchedState.links.push(urlValue);
-          return request(urlValue);
+          watchedState.links.push(urlValue); //дождать пока пройдут проверки и тогда добавлять ее в массив ссылок
+          return request(urlValue); //можно без этого
         })
         .then((data) => parser(data))
         .then((arr) => {
+          watchedState.valid = true;
           elements.form.reset();
           const [feed, posts] = arr;
-          posts.forEach((el) => {
+          posts.map((el) => {
             const element = el;
             element.id = _.uniqueId();
           });
           watchedState.posts.push(...posts);
           watchedState.feeds.push(feed);
+          
+          //сюда вставить код на добавление ссылки в массив
         })
         .catch((err) => {
-          watchedState.valid = true;
-          let key;
-          switch (err.message) {
-            case 'this must be a valid URL':
-              key = 'err.url.url';
-              break;
-            case 'Ошибка парсинга':
-              key = 'err.parse.parse';
-              break;
-            case 'Не уникальный RSS':
-              key = 'err.notUnique.notUnique';
-              break;
-            case 'Ошибка доступа':
-              key = 'err.network.network';
-              break;
-            default:
-              throw new Error('Unidentified error');
-          }
-          watchedState.valid = false;
+          const key = chooseError(err.message)
           const value = i18nInstance.t(key);
           watchedState.error = value;
+          watchedState.valid = false;
         });
     });
 
@@ -120,11 +120,15 @@ export default () => {
               watchedState.posts.push(...diff);
             }
           });
-        return true;
+        return true; // отключить правила линтера
       });
       const promise = Promise.all(promises);
       promise.then(() => setTimeout(updatePost, 5000));
     };
-    setTimeout(updatePost, 5000);
+
+    //if () { //запускать проверку только если в массиве ссылок есть текущая ссылка из состояния
+      //console.log('ddd')
+      setTimeout(updatePost, 5000);
+    //}    
   });
 };

@@ -2,6 +2,7 @@ import onChange from 'on-change';
 
 export default (elements, i18n, initialState) => {
   const createModal = (title, link, description) => {
+    //const myModal = new bootstrap.Modal(document.getElementById('modal'), options)
     const divAll = document.querySelector('.modal');
     divAll.innerHTML = `<div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -38,7 +39,7 @@ export default (elements, i18n, initialState) => {
     }));
   };
 
-  const touchPost = [];
+  const touchPost = []; //вынести в состояние
 
   const renderClass = () => {
     const el2 = elements.fields.link;
@@ -50,6 +51,7 @@ export default (elements, i18n, initialState) => {
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
     } else {
+      console.log(initialState.error)
       el2.classList.remove('is-valid');
       el2.classList.add('is-invalid');
       feedback.textContent = initialState.error;
@@ -57,14 +59,14 @@ export default (elements, i18n, initialState) => {
       feedback.classList.add('text-danger');
     }
 
-    if (initialState.error.length === 0) {
+   /* if (initialState.error.length === 0) {
       el2.classList.remove('is-invalid');
       el2.classList.add('is-valid');
 
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
       feedback.textContent = i18n.t('success.load.load');
-    }
+    } */
   };
 
   const renderFeed = () => {
@@ -147,8 +149,8 @@ export default (elements, i18n, initialState) => {
       button.textContent = i18n.t('inter.posts.watch');
       li.append(a);
       li.append(button);
-      button.addEventListener('click', () => {
-        createModal(post.title, post.link, post.description);
+      button.addEventListener('click', () => { //не на кнопку(котейнер), вынести в app если нажали на кнопку
+        createModal(post.title, post.link, post.description); 
         touchPost.push(post.id);
         console.log(post);
         if (touchPost.includes(post.id)) {
@@ -161,7 +163,7 @@ export default (elements, i18n, initialState) => {
 
   const render = (path) => {
     switch (path) {
-      case 'error':
+      case 'valid': //изменить место зацепа
         renderClass();
         break;
       case 'feeds':
