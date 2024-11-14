@@ -108,21 +108,30 @@ export default (elements, i18n, initialState) => {
       const button = document.createElement('button');
       button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
       button.type = 'button';
-      const title = document.querySelector('title');
-      button.dataset.id = title.textContent;
+      a.dataset.id = post.id;
+      button.dataset.id = post.id;
       button.dataset.bs_toggle = 'modal';
       button.dataset.bs_target = '#modal';
       button.textContent = i18n.t('inter.posts.watch');
       li.append(a);
       li.append(button);
-      button.addEventListener('click', () => {
-        createModal(post.title, post.link, post.description);
-        initialState.touchPost.push(post.id);
-        if (initialState.touchPost.includes(post.id)) {
+    });
+    postsDiv.addEventListener('click', (e) => {
+      if (e.target && e.target.tagName === 'BUTTON') {
+        const modalID = e.target.dataset.id;
+        const currentPost = posts.find((el) => el.id === modalID);
+        console.log(currentPost);
+        const titleModal = currentPost.title;
+        const linkModal = currentPost.link;
+        const descriptionModal = currentPost.description;
+        createModal(titleModal, linkModal, descriptionModal);
+        initialState.touchPost.push(modalID);
+        if (initialState.touchPost.includes(modalID)) {
+          const a = document.querySelector(`a[data-id="${modalID}"]`);
           a.classList.add('fw-normal', 'link-secondary');
           a.classList.remove('fw-bold');
         }
-      });
+      }
     });
   };
 
