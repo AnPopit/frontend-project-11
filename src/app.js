@@ -76,6 +76,7 @@ export default () => {
           posts.map((el) => {
             const element = el;
             element.id = _.uniqueId();
+            return true;
           });
           watchedState.posts.push(...posts);
           watchedState.feeds.push(feed);
@@ -111,6 +112,7 @@ export default () => {
           .catch((e) => {
             throw e;
           });
+        return true;
       });
       const promise = Promise.all(promises);
       promise.then(() => setTimeout(updatePost, 5000));

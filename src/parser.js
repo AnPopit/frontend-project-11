@@ -16,6 +16,7 @@ const parser = (data) => {
       link: el.querySelector('link').textContent,
       description: el.querySelector('description').textContent,
     });
+    return true;
   });
   return [feed, posts];
 };
