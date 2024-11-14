@@ -8,7 +8,7 @@ const parser = (data) => {
   }
   const titleFeed = dataDOM.querySelector('channel > title').textContent;
   const descriptionFeed = dataDOM.querySelector('channel > description').textContent;
-  const feed = {title: titleFeed, description: descriptionFeed}
+  const feed = { title: titleFeed, description: descriptionFeed };
   const item = dataDOM.querySelectorAll('channel > item');
   Array.from(item).map((el) => {
     posts.push({

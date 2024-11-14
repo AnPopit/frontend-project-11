@@ -55,6 +55,7 @@ export default [
       'import/no-named-as-default': 'off',
       'import/no-named-as-default-member': 'off',
       'no-console': 'off',
+      'array-callback-return': 'off',
       'import/no-extraneous-dependencies': 'off',
     },
   },

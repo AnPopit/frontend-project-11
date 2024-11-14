@@ -22,15 +22,15 @@ export default () => {
       },
     });
 
-    const schema = yup.string().url();
+    const defaultSchema = yup.string().url();
 
     const initialState = {
-      valid: '', //проверка на валидность
+      valid: '', // проверка на валидность
       error: '',
       links: [],
       posts: [],
       feeds: [],
-
+      touchPost: [],
     };
 
     const elements = {
@@ -41,45 +41,35 @@ export default () => {
       submitButton: document.querySelector('button[type="submit"]'),
     };
 
-    const findDub = (array, el) => {
-      if (array.includes(el)) {
-        throw new Error('Не уникальный RSS');
-      } else {
-        return el;
-      }
-    };
-
     const chooseError = (error) => {
       switch (error) {
         case 'this must be a valid URL':
           return 'err.url.url';
         case 'Ошибка парсинга':
-          return'err.parse.parse';
-        case 'Не уникальный RSS':
+          return 'err.parse.parse';
+        case 'ссылка дублируется':
           return 'err.notUnique.notUnique';
         case 'Ошибка доступа':
           return 'err.network.network';
         default:
           throw new Error('Unidentified error');
       }
-    }
+    };
 
     const watchedState = watch(elements, i18nInstance, initialState);
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      const url = formData.get('url'); //вынести эту переменную в состояние
+      const url = formData.get('url');
       watchedState.error = '';
       elements.fields.link.focus();
+      const schema = defaultSchema.notOneOf(watchedState.links, 'ссылка дублируется');
       schema.validate(url, { abortEarly: false })
-        .then((urlValue) => {
-          findDub(initialState.links, urlValue);
-          watchedState.links.push(urlValue); //дождать пока пройдут проверки и тогда добавлять ее в массив ссылок
-          return request(urlValue); //можно без этого
-        })
+        .then((urlValue) => request(urlValue))
         .then((data) => parser(data))
         .then((arr) => {
+          watchedState.links.push(url);
           watchedState.valid = true;
           elements.form.reset();
           const [feed, posts] = arr;
@@ -89,11 +79,9 @@ export default () => {
           });
           watchedState.posts.push(...posts);
           watchedState.feeds.push(feed);
-          
-          //сюда вставить код на добавление ссылки в массив
         })
         .catch((err) => {
-          const key = chooseError(err.message)
+          const key = chooseError(err.message);
           const value = i18nInstance.t(key);
           watchedState.error = value;
           watchedState.valid = false;
@@ -119,16 +107,14 @@ export default () => {
             if (diff.length !== 0) {
               watchedState.posts.push(...diff);
             }
+          })
+          .catch((e) => {
+            throw e;
           });
-        return true; // отключить правила линтера
       });
       const promise = Promise.all(promises);
       promise.then(() => setTimeout(updatePost, 5000));
     };
-
-    //if () { //запускать проверку только если в массиве ссылок есть текущая ссылка из состояния
-      //console.log('ddd')
-      setTimeout(updatePost, 5000);
-    //}    
+    setTimeout(updatePost, 5000);
   });
 };
