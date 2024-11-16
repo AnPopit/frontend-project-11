@@ -50,8 +50,8 @@ export default () => {
         element.id = _.uniqueId();
         return element;
       });
-      return postsWithID
-    }
+      return postsWithID;
+    };
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -68,7 +68,7 @@ export default () => {
           watchedState.valid = true;
           elements.form.reset();
           const [feed, posts] = arr;
-          const postsWithID = createArrayWithId(posts)
+          const postsWithID = createArrayWithId(posts);
           watchedState.posts.push(...postsWithID);
           watchedState.feeds.push(feed);
         })
@@ -95,7 +95,7 @@ export default () => {
               return element;
             });
             const diff = _.differenceWith(posts, postsWithoutID, _.isEqual);
-            const postsWithID = createArrayWithId(diff)
+            const postsWithID = createArrayWithId(diff);
             if (diff.length !== 0) {
               watchedState.posts.push(...postsWithID);
             }
