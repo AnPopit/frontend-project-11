@@ -44,6 +44,15 @@ export default () => {
 
     const watchedState = watch(elements, i18nInstance, initialState);
 
+    const createArrayWithId = (array) => {
+      const postsWithID = array.map((el) => {
+        const element = el;
+        element.id = _.uniqueId();
+        return element;
+      });
+      return postsWithID
+    }
+
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
@@ -59,11 +68,7 @@ export default () => {
           watchedState.valid = true;
           elements.form.reset();
           const [feed, posts] = arr;
-          const postsWithID = posts.map((el) => {
-            const element = el;
-            element.id = _.uniqueId();
-            return element;
-          });
+          const postsWithID = createArrayWithId(posts)
           watchedState.posts.push(...postsWithID);
           watchedState.feeds.push(feed);
         })
@@ -90,11 +95,7 @@ export default () => {
               return element;
             });
             const diff = _.differenceWith(posts, postsWithoutID, _.isEqual);
-            const postsWithID = diff.map((el) => {
-              const element = el;
-              element.id = _.uniqueId();
-              return element;
-            });
+            const postsWithID = createArrayWithId(diff)
             if (diff.length !== 0) {
               watchedState.posts.push(...postsWithID);
             }
