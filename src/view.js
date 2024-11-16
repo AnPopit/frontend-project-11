@@ -7,7 +7,6 @@ export default (elements, i18n, initialState) => {
     const modalTitle = modal.querySelector('.modal-title');
     const modalBody = modal.querySelector('.modal-body');
     const linkButtonRead = modal.querySelector('.btn-primary');
-
     modalTitle.textContent = title;
     modalBody.textContent = description;
     linkButtonRead.href = link;
@@ -70,9 +69,9 @@ export default (elements, i18n, initialState) => {
       li.append(p);
     });
   };
+  const postsDiv = document.querySelector('div .posts');
 
   const renderNews = () => {
-    const postsDiv = document.querySelector('div .posts');
     postsDiv.innerHTML = '';
     const divCardFirst = document.createElement('div');
     divCardFirst.classList.add('card', 'border-0');
@@ -116,24 +115,25 @@ export default (elements, i18n, initialState) => {
       li.append(a);
       li.append(button);
     });
-    postsDiv.addEventListener('click', (e) => {
-      if (e.target && e.target.tagName === 'BUTTON') {
-        const modalID = e.target.dataset.id;
-        const currentPost = posts.find((el) => el.id === modalID);
-        console.log(currentPost);
-        const titleModal = currentPost.title;
-        const linkModal = currentPost.link;
-        const descriptionModal = currentPost.description;
-        createModal(titleModal, linkModal, descriptionModal);
-        initialState.touchPost.push(modalID);
-        if (initialState.touchPost.includes(modalID)) {
-          const a = document.querySelector(`a[data-id="${modalID}"]`);
-          a.classList.add('fw-normal', 'link-secondary');
-          a.classList.remove('fw-bold');
-        }
-      }
-    });
   };
+
+  postsDiv.addEventListener('click', (e) => {
+    if (e.target && e.target.tagName === 'BUTTON') {
+      const modalID = e.target.dataset.id;
+      const currentPost = initialState.posts.find((el) => el.id === modalID);
+      console.log(currentPost);
+      const titleModal = currentPost.title;
+      const linkModal = currentPost.link;
+      const descriptionModal = currentPost.description;
+      createModal(titleModal, linkModal, descriptionModal);
+      initialState.touchPost.push(modalID);
+      if (initialState.touchPost.includes(modalID)) {
+        const a = document.querySelector(`a[data-id="${modalID}"]`);
+        a.classList.add('fw-normal', 'link-secondary');
+        a.classList.remove('fw-bold');
+      }
+    }
+  });
 
   const render = (path) => {
     switch (path) {

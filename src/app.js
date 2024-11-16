@@ -3,6 +3,7 @@ import _ from 'lodash';
 import i18next from 'i18next';
 import * as yup from 'yup';
 import request from './request.js';
+import chooseError from './chooseError.js';
 import parser from './parser.js';
 import 'bootstrap';
 
@@ -41,21 +42,6 @@ export default () => {
       submitButton: document.querySelector('button[type="submit"]'),
     };
 
-    const chooseError = (error) => {
-      switch (error) {
-        case 'this must be a valid URL':
-          return 'err.url.url';
-        case 'Ошибка парсинга':
-          return 'err.parse.parse';
-        case 'ссылка дублируется':
-          return 'err.notUnique.notUnique';
-        case 'Ошибка доступа':
-          return 'err.network.network';
-        default:
-          throw new Error('Unidentified error');
-      }
-    };
-
     const watchedState = watch(elements, i18nInstance, initialState);
 
     elements.form.addEventListener('submit', (e) => {
@@ -73,12 +59,12 @@ export default () => {
           watchedState.valid = true;
           elements.form.reset();
           const [feed, posts] = arr;
-          posts.map((el) => {
+          const postsWithID = posts.map((el) => {
             const element = el;
             element.id = _.uniqueId();
-            return true;
+            return element;
           });
-          watchedState.posts.push(...posts);
+          watchedState.posts.push(...postsWithID);
           watchedState.feeds.push(feed);
         })
         .catch((err) => {
@@ -89,6 +75,8 @@ export default () => {
         });
     });
 
+    const updateInterval = 5000;
+
     const updatePost = () => {
       const promises = watchedState.links.map((link) => {
         request(link)
@@ -96,27 +84,29 @@ export default () => {
           .then((arr) => {
             const [, posts] = arr;
             const currentPosts = _.cloneDeep(watchedState.posts);
-            currentPosts.forEach((el) => {
+            const postsWithoutID = currentPosts.map((el) => {
               const element = el;
               delete element.id;
+              return element;
             });
-            const diff = _.differenceWith(posts, currentPosts, _.isEqual);
-            diff.forEach((el) => {
+            const diff = _.differenceWith(posts, postsWithoutID, _.isEqual);
+            const postsWithID = diff.map((el) => {
               const element = el;
               element.id = _.uniqueId();
+              return element;
             });
             if (diff.length !== 0) {
-              watchedState.posts.push(...diff);
+              watchedState.posts.push(...postsWithID);
             }
           })
           .catch((e) => {
             throw e;
           });
-        return true;
+        return watchedState.posts;
       });
       const promise = Promise.all(promises);
-      promise.then(() => setTimeout(updatePost, 5000));
+      promise.then(() => setTimeout(updatePost, updateInterval));
     };
-    setTimeout(updatePost, 5000);
+    setTimeout(updatePost, updateInterval);
   });
 };

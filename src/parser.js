@@ -1,5 +1,5 @@
 const parser = (data) => {
-  const posts = [];
+  // const posts = [];
   const parserCopy = new DOMParser();
   const dataDOM = parserCopy.parseFromString(data, 'text/xml');
   const errorNode = dataDOM.querySelector('parsererror');
@@ -10,14 +10,11 @@ const parser = (data) => {
   const descriptionFeed = dataDOM.querySelector('channel > description').textContent;
   const feed = { title: titleFeed, description: descriptionFeed };
   const item = dataDOM.querySelectorAll('channel > item');
-  Array.from(item).map((el) => {
-    posts.push({
-      title: el.querySelector('title').textContent,
-      link: el.querySelector('link').textContent,
-      description: el.querySelector('description').textContent,
-    });
-    return true;
-  });
+  const posts = Array.from(item).map((el) => ({
+    title: el.querySelector('title').textContent,
+    link: el.querySelector('link').textContent,
+    description: el.querySelector('description').textContent,
+  }));
   return [feed, posts];
 };
 
