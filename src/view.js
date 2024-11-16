@@ -15,6 +15,14 @@ export default (elements, i18n, initialState) => {
     bootstrapModal.show();
   };
 
+  const checkExisUl = (selector, div) => {
+    if (!(selector)) {
+      const ulNew = document.createElement('ul');
+      ulNew.classList.add('list-group', 'border-0', 'rounded-0');
+      div.append(ulNew);
+    }
+  };
+
   const renderClass = () => {
     const el2 = elements.fields.link;
     const feedback = document.querySelector('.feedback');
@@ -47,11 +55,7 @@ export default (elements, i18n, initialState) => {
     h2.classList.add('card-title', 'h4');
     divCardSecond.append(h2);
     h2.textContent = i18n.t('inter.feeds.feeds');
-    if (!(feedsDiv.querySelector('ul'))) {
-      const ulNew = document.createElement('ul');
-      ulNew.classList.add('list-group', 'border-0', 'rounded-0');
-      divCardFirst.append(ulNew);
-    }
+    checkExisUl(feedsDiv.querySelector('ul'), divCardFirst);
     const ul = feedsDiv.querySelector('ul');
 
     const { feeds } = initialState;
@@ -83,11 +87,7 @@ export default (elements, i18n, initialState) => {
     h2.classList.add('card-title', 'h4');
     divCardSecond.append(h2);
     h2.textContent = i18n.t('inter.posts.posts');
-    if (!(postsDiv.querySelector('ul'))) {
-      const ulNew = document.createElement('ul');
-      ulNew.classList.add('list-group', 'border-0', 'rounded-0');
-      divCardFirst.append(ulNew);
-    }
+    checkExisUl(postsDiv.querySelector('ul'), divCardFirst);
     const ul = postsDiv.querySelector('ul');
     const { posts } = initialState;
     posts.forEach((post) => {
