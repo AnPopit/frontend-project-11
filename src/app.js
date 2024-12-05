@@ -26,7 +26,7 @@ export default () => {
     const defaultSchema = yup.string().url();
 
     const initialState = {
-      valid: '', // проверка на валидность
+      valid: '',
       error: '',
       links: [],
       posts: [],

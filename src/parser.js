@@ -1,5 +1,4 @@
 const parser = (data) => {
-  // const posts = [];
   const parserCopy = new DOMParser();
   const dataDOM = parserCopy.parseFromString(data, 'text/xml');
   const errorNode = dataDOM.querySelector('parsererror');

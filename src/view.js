@@ -33,7 +33,6 @@ export default (elements, i18n, initialState) => {
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
     } else {
-      console.log(initialState.error);
       el2.classList.remove('is-valid');
       el2.classList.add('is-invalid');
       feedback.textContent = initialState.error;
@@ -121,7 +120,6 @@ export default (elements, i18n, initialState) => {
     if (e.target && e.target.tagName === 'BUTTON') {
       const modalID = e.target.dataset.id;
       const currentPost = initialState.posts.find((el) => el.id === modalID);
-      console.log(currentPost);
       const titleModal = currentPost.title;
       const linkModal = currentPost.link;
       const descriptionModal = currentPost.description;
